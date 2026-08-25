@@ -10,16 +10,16 @@ git clone --recurse-submodules https://github.com/happy-wakey/happy-wakey-monore
 
 | Path | Responsibility |
 | --- | --- |
-| `apps/happy-wakey-interfaces` | Types, OpenAPI, JSON Schema, SQL, and formal contracts; no implementations. |
-| `apps/happy-wakey-lib-core` | Domain implementations and role-aware SeaORM boundary. |
-| `apps/happy-wakey-api-server.rs` | Shared Auth-protected JSON API, SeaORM persistence, reducers, and Ores telemetry. |
-| `apps/happy-wakey-web-server.rs` | MASH, Leptos, and Dioxus SSR frontends with Shared Auth and Ores telemetry. |
-| `apps/happy-wakey-clients` | Contract-generated clients across 16 languages and multiple TypeScript runtimes. |
+| `apps/happy-wakey-interfaces` | Types, OpenAPI, JSON Schema, SQL, Bluetooth, and formal contracts; no implementations. |
+| `apps/happy-wakey-lib-core` | Domain and persistence implementations for SeaORM, Drizzle, Prisma, GORM, and gRPC. |
+| `apps/happy-wakey-api-server.rs` | Shared Auth-protected Rust JSON API, SeaORM persistence, and four bounded request transports. |
+| `apps/happy-wakey-web-server.rs` | Rust MASH SSR with HTMX, Maud, Axum, SeaORM, Leptos, Dioxus islands, and four API transports. |
+| `apps/happy-wakey-clients` | Contract-generated external SDKs across 17 language and runtime targets. |
 | `apps/happy-wakey-sync` | Bounded Opto Sync integration for client-owned data. |
-| `apps/happy-wakey-cli` | Rust CLI using the official Shared Auth client. |
-| `apps/happy-wakey-flutter` | Mobile, web, and desktop Flutter application. |
-| `apps/happy-wakey-desktop-app.rs` | Native Rust/Qt desktop application revived with its original history. |
-| `apps/happy-wakey-e2e` | Cross-service topology, security, resilience, and live acceptance evidence. |
+| `apps/happy-wakey-cli` | Rust CLI using flags-2-env and the bounded public Shared Auth protocol. |
+| `apps/happy-wakey-flutter` | Mobile, web, and desktop Flutter application with native universal_ble support. |
+| `apps/happy-wakey-desktop-app.rs` | Native Rust/Qt desktop application with btleplug Bluetooth; no React or webview UI. |
+| `apps/happy-wakey-e2e` | Exact-pin cross-service topology, Bluetooth, security, resilience, and optional live acceptance evidence. |
 | `apps/happy-wakey-infra` | Cloudflare, Kubernetes, TLS/secret mounts, and pre-provisioned JetStream desired state. |
 
 `happy-wakey-infra` retains its independent release and security surface while
@@ -32,21 +32,18 @@ The accepted topology has four avenues, all returning `happy-wakey-interfaces` c
 
 | Avenue | Exact-pin evidence | Current gate |
 | --- | --- | --- |
-| Direct database read | The web pin calls only the subject-scoped `happy-wakey-lib-core` read capability; infra requires a database-enforced read-only role. | Merged API/web pins; native tests and strict linting passed locally against the exact private Shared Auth revision. |
-| Stateless HTTPS | The web pin uses bounded no-redirect HTTPS and the API re-introspects the bearer with the official typed Shared Auth client. | Merged API/web pins; the API rejects oversized request bodies and the web client bounds streamed responses. |
-| Stateful TLS | The pins implement asymmetric bounded frames, connection/request limits, TLS verification, reconnect-on-read-failure, and reauthentication on every frame. | Merged API/web pins and local bounded transport tests. |
-| Async JetStream/outbox | Authenticated HTTPS registers the outbox; the credential-free signal enters a pre-provisioned durable stream; the API commits and durably publishes the response before acknowledging the request. | Merged API/web pins and pre-provisioned durable topology; Core NATS is explicitly forbidden. |
+| Direct database read | The web server calls only the subject-scoped `happy-wakey-lib-core` read capability; infra requires a database-enforced read-only role. | Implemented and source-tested; live database role enforcement remains a deployment gate. |
+| Stateless HTTPS | The web server uses bounded, no-redirect HTTPS and the API re-introspects each bearer through the public Shared Auth protocol. | Implemented and exercised in native tests at the pinned heads. |
+| Stateful TCP/TLS | The servers use bounded length-delimited frames, TLS verification, connection/request limits, reconnect-on-read-failure, and per-frame authentication. | Implemented and exercised by bounded transport tests at the pinned heads. |
+| Async NATS JetStream/outbox | Authenticated HTTPS registers the outbox; a credential-free signal enters a pre-provisioned durable stream; the API commits and durably publishes a response before acknowledging the request. | Implemented and source-tested; live broker durability and settlement remain deployment gates. |
 
-This integration pin uses merged API revision
-`62d0efd597e4686e6aa34d58dd97af627af09f11` and merged web revision
-`216bac3e9f14bedb55c14cc023aca933787a45e6`. Required hosted native CI cannot
-read the official private Shared Auth source at
-`cc57a85b276bee81ad94decc87df2f48d49cab9f`; a job that skips native
-compilation when that repository is unreadable is not substantive CI evidence.
-Both server changes were merged before the workflow received a narrowly scoped
-repository/org read credential or an approved public/package distribution, so
-the missing native CI evidence remains an explicit release blocker. Do not claim
-deployment readiness without exact image digests and live environment evidence.
+The pinned API and web revisions build in hosted CI without a private Git
+dependency: each implements the bounded public Shared Auth HTTPS protocol and
+validates the same interface revision. Exact source heads and hosted checks are
+recorded here and in `happy-wakey-e2e`. They prove the reviewed source set, not a
+deployed environment. Do not claim deployment readiness without exact image
+digests, live Shared Auth/database/broker evidence, and physical Bluetooth-radio
+evidence.
 
 ## Dependency and submodule discipline
 
