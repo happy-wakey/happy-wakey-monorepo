@@ -17,13 +17,18 @@ const expected = [
   'happy-wakey-web-server.rs',
 ];
 
-const hardenedPins = new Map([
-  ['apps/happy-wakey-api-server.rs', '62d0efd597e4686e6aa34d58dd97af627af09f11'],
-  ['apps/happy-wakey-e2e', '5b61f0bec30bbe3a91c1b79e2bf52f0bb8cdc758'],
+const exactPins = new Map([
+  ['apps/happy-wakey-api-server.rs', '60a7dac6f4a2bd16481edc776f7323129b962125'],
+  ['apps/happy-wakey-cli', 'd8a7c45bef21c6540ef97a2fe08f902f7c285b15'],
+  ['apps/happy-wakey-clients', '7b8e24090dcbb6a71cf140a5108ca74fa1a01c2e'],
+  ['apps/happy-wakey-desktop-app.rs', 'ac31a2a22d532575cd6ba04c500c6ccf8e7117eb'],
+  ['apps/happy-wakey-e2e', '4baa1a74365a53c7f0c5739774bda252f8f88de5'],
+  ['apps/happy-wakey-flutter', '2f748459cb942802a112825abbebd5c0ea77811c'],
   ['apps/happy-wakey-infra', 'da5b034c09bb34d5dfe7e91bea9434df8991529d'],
-  ['apps/happy-wakey-interfaces', '0f4c4bffa81c1e7d914281fc2056697a2f1a3020'],
-  ['apps/happy-wakey-lib-core', '45977ea1c25de5e90f3638de55c89a1b47c5090f'],
-  ['apps/happy-wakey-web-server.rs', '216bac3e9f14bedb55c14cc023aca933787a45e6'],
+  ['apps/happy-wakey-interfaces', 'd6278ec8f6b2263678728b147a32dff92d52d8c8'],
+  ['apps/happy-wakey-lib-core', '9638429097bc68b2aac280d4e3edaa92db96f85a'],
+  ['apps/happy-wakey-sync', '5943e1764e3ada83985e6c5051869ba7e772e55c'],
+  ['apps/happy-wakey-web-server.rs', '5e79984641b72033fb3a1962996ed43222105a14'],
 ]);
 
 test('pins every application repository under apps', async () => {
@@ -45,7 +50,9 @@ test('records every repository as an immutable gitlink', () => {
     }));
 
   assert.deepEqual([...gitlinks.keys()].sort(), expected.map((name) => `apps/${name}`).sort());
-  for (const [path, revision] of hardenedPins) {
+  assert.equal(exactPins.size, expected.length, 'every application needs an exact reviewed pin');
+  for (const [path, revision] of exactPins) {
+    assert.match(revision, /^[0-9a-f]{40}$/, `${path} does not use a full Git revision`);
     assert.equal(gitlinks.get(path), revision, `${path} drifted from its reviewed pin`);
   }
 });
