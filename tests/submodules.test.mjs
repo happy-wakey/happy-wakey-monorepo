@@ -18,12 +18,12 @@ const expected = [
 ];
 
 const hardenedPins = new Map([
-  ['apps/happy-wakey-api-server.rs', '89435504161a577aa5538160accc5866020d0a6f'],
-  ['apps/happy-wakey-e2e', 'bb3d5e304f61dc0a6b05e199258f15d7b7bc66df'],
+  ['apps/happy-wakey-api-server.rs', 'd0012f3334420535072653f94b97792aea3f2dbd'],
+  ['apps/happy-wakey-e2e', 'a437b74d38cbad37eb1102b6db76cb6e1ac29ae4'],
   ['apps/happy-wakey-infra', 'da5b034c09bb34d5dfe7e91bea9434df8991529d'],
   ['apps/happy-wakey-interfaces', '0f4c4bffa81c1e7d914281fc2056697a2f1a3020'],
   ['apps/happy-wakey-lib-core', '45977ea1c25de5e90f3638de55c89a1b47c5090f'],
-  ['apps/happy-wakey-web-server.rs', '3983a1200c0179cbcfd575746d903ccec0cc4177'],
+  ['apps/happy-wakey-web-server.rs', '2da68bcc44f054ce23740c3493a7c5b1d24b5ce3'],
 ]);
 
 test('pins every application repository under apps', async () => {
