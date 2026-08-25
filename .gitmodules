@@ -28,3 +28,6 @@
 [submodule "apps/happy-wakey-e2e"]
 	path = apps/happy-wakey-e2e
 	url = https://github.com/happy-wakey/happy-wakey-e2e.git
+[submodule "apps/happy-wakey-infra"]
+	path = apps/happy-wakey-infra
+	url = https://github.com/happy-wakey/happy-wakey-infra.git
