@@ -1,0 +1,23 @@
+[package]
+org = "happy-wakey"
+name = "happy-wakey-monorepo"
+version = "0.1.0"
+description = "Pinned integration superproject for Happy Wakey applications and contracts"
+license = "MIT"
+keywords = ["monorepo", "submodules", "integration", "git"]
+
+[package.repository]
+vcs = "git"
+url = "https://github.com/happy-wakey/happy-wakey-monorepo"
+
+[targets.repository]
+dir = "."
+adapter = "node"
+
+[publish]
+include_readme = true
+tag_format = "v{version}"
+exclude = [".env", ".env.*", ".zed/**", "zed_modules/**", "node_modules/**", "**/*.log", ".DS_Store"]
+
+[scripts]
+test = "node --test"

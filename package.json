@@ -1,0 +1,13 @@
+{
+  "name": "@happy-wakey/monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pinned integration superproject for Happy Wakey applications and contracts",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}
