@@ -1,6 +1,9 @@
 # happy-wakey-monorepo
 
-Pinned integration superproject for the Happy Wakey application fleet. Every repository under `apps/` is a Git submodule at an exact commit so a review, E2E run, or release can identify the complete source set.
+Pinned integration superproject for the public, Kubernetes-deployable Happy
+Wakey application fleet. `monorepo.config.json` is the authority for the apps
+that belong here, and every listed app is a Git submodule at an exact reviewed
+commit.
 
 ```sh
 git clone --recurse-submodules https://github.com/happy-wakey/happy-wakey-monorepo.git
@@ -10,21 +13,19 @@ git clone --recurse-submodules https://github.com/happy-wakey/happy-wakey-monore
 
 | Path | Responsibility |
 | --- | --- |
-| `apps/happy-wakey-interfaces` | Types, OpenAPI, JSON Schema, SQL, Bluetooth, and formal contracts; no implementations. |
-| `apps/happy-wakey-lib-core` | Domain and persistence implementations for SeaORM, Drizzle, Prisma, GORM, and gRPC. |
 | `apps/happy-wakey-api-server.rs` | Shared Auth-protected Rust JSON API, SeaORM persistence, and four bounded request transports. |
 | `apps/happy-wakey-web-server.rs` | Rust MASH SSR with HTMX, Maud, Axum, SeaORM, Leptos, Dioxus islands, and four API transports. |
-| `apps/happy-wakey-clients` | Contract-generated external SDKs across 17 language and runtime targets. |
-| `apps/happy-wakey-sync` | Bounded Opto Sync integration for client-owned data. |
-| `apps/happy-wakey-cli` | Rust CLI using flags-2-env and the bounded public Shared Auth protocol. |
-| `apps/happy-wakey-flutter` | Mobile, web, and desktop Flutter application with native universal_ble support. |
-| `apps/happy-wakey-desktop-app.rs` | Native Rust/Qt desktop application with btleplug Bluetooth; no React or webview UI. |
-| `apps/happy-wakey-e2e` | Exact-pin cross-service topology, Bluetooth, security, resilience, and optional live acceptance evidence. |
-| `apps/happy-wakey-infra` | Cloudflare, Kubernetes, TLS/secret mounts, and pre-provisioned JetStream desired state. |
+| `apps/happy-wakey-sidecar.rs` | Fail-closed readiness and diagnostics sidecar using the public Ores OTEL base, Shared Auth authority, Opto Sync authority, and flags-2-env. |
+| `apps/happy-wakey-mcp-server.rs` | Hardened read-only MCP service for bounded Happy Wakey organization discovery. |
 
-`happy-wakey-infra` retains its independent release and security surface while
-also appearing here as an exact gitlink, so a fleet pin includes the reviewed
-deployment and JetStream desired state without copying infrastructure files.
+The SDKs, CLI, Flutter and native desktop clients, interfaces, libraries, sync
+adapter, E2E suite, and infrastructure remain independently versioned source
+repositories. They are deliberately not placed under `apps/`: this
+superproject is an app-of-apps, not a vendor tree. The private admin API and web
+applications are also excluded because a public superproject must remain
+recursively cloneable without access to the isolated admin source boundary.
+Their independently reviewed revisions and deployments are tracked in the
+private admin release process.
 
 ## Web/API interaction audit
 
@@ -39,11 +40,11 @@ The accepted topology has four avenues, all returning `happy-wakey-interfaces` c
 
 The pinned API and web revisions build in hosted CI without a private Git
 dependency: each implements the bounded public Shared Auth HTTPS protocol and
-validates the same interface revision. Exact source heads and hosted checks are
-recorded here and in `happy-wakey-e2e`. They prove the reviewed source set, not a
-deployed environment. Do not claim deployment readiness without exact image
-digests, live Shared Auth/database/broker evidence, and physical Bluetooth-radio
-evidence.
+validates the same interface revision. Exact source heads are enforced by this
+repository's tests; broader topology evidence remains in `happy-wakey-e2e`.
+These pins prove a reviewed source set, not a deployed environment. Do not claim
+deployment readiness without exact image digests, live Shared
+Auth/database/broker evidence, and physical Bluetooth-radio evidence.
 
 ## Dependency and submodule discipline
 

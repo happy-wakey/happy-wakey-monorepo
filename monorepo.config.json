@@ -1,0 +1,10 @@
+{
+  "org": "happy-wakey",
+  "monorepo": "happy-wakey-monorepo",
+  "apps": [
+    "happy-wakey-api-server.rs",
+    "happy-wakey-mcp-server.rs",
+    "happy-wakey-sidecar.rs",
+    "happy-wakey-web-server.rs"
+  ]
+}

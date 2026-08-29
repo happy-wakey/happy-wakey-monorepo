@@ -1,33 +1,12 @@
-[submodule "apps/happy-wakey-interfaces"]
-	path = apps/happy-wakey-interfaces
-	url = https://github.com/happy-wakey/happy-wakey-interfaces.git
 [submodule "apps/happy-wakey-api-server.rs"]
 	path = apps/happy-wakey-api-server.rs
 	url = https://github.com/happy-wakey/happy-wakey-api-server.rs.git
 [submodule "apps/happy-wakey-web-server.rs"]
 	path = apps/happy-wakey-web-server.rs
 	url = https://github.com/happy-wakey/happy-wakey-web-server.rs.git
-[submodule "apps/happy-wakey-flutter"]
-	path = apps/happy-wakey-flutter
-	url = https://github.com/happy-wakey/happy-wakey-flutter.git
-[submodule "apps/happy-wakey-desktop-app.rs"]
-	path = apps/happy-wakey-desktop-app.rs
-	url = https://github.com/happy-wakey/happy-wakey-desktop-app.rs.git
-[submodule "apps/happy-wakey-cli"]
-	path = apps/happy-wakey-cli
-	url = https://github.com/happy-wakey/happy-wakey-cli.git
-[submodule "apps/happy-wakey-clients"]
-	path = apps/happy-wakey-clients
-	url = https://github.com/happy-wakey/happy-wakey-clients.git
-[submodule "apps/happy-wakey-sync"]
-	path = apps/happy-wakey-sync
-	url = https://github.com/happy-wakey/happy-wakey-sync.git
-[submodule "apps/happy-wakey-lib-core"]
-	path = apps/happy-wakey-lib-core
-	url = https://github.com/happy-wakey/happy-wakey-lib-core.git
-[submodule "apps/happy-wakey-e2e"]
-	path = apps/happy-wakey-e2e
-	url = https://github.com/happy-wakey/happy-wakey-e2e.git
-[submodule "apps/happy-wakey-infra"]
-	path = apps/happy-wakey-infra
-	url = https://github.com/happy-wakey/happy-wakey-infra.git
+[submodule "apps/happy-wakey-sidecar.rs"]
+	path = apps/happy-wakey-sidecar.rs
+	url = https://github.com/happy-wakey/happy-wakey-sidecar.rs.git
+[submodule "apps/happy-wakey-mcp-server.rs"]
+	path = apps/happy-wakey-mcp-server.rs
+	url = https://github.com/happy-wakey/happy-wakey-mcp-server.rs.git
