@@ -5,33 +5,53 @@ import test from 'node:test';
 
 const expected = [
   'happy-wakey-api-server.rs',
-  'happy-wakey-cli',
-  'happy-wakey-clients',
-  'happy-wakey-desktop-app.rs',
-  'happy-wakey-e2e',
-  'happy-wakey-flutter',
-  'happy-wakey-interfaces',
-  'happy-wakey-lib-core',
-  'happy-wakey-sync',
+  'happy-wakey-mcp-server.rs',
+  'happy-wakey-sidecar.rs',
   'happy-wakey-web-server.rs',
 ];
 
-test('pins every application repository under apps', async () => {
+const exactPins = new Map([
+  ['apps/happy-wakey-api-server.rs', '7ba5ac2c5576a5fa79665585e067e8ea98b6eade'],
+  ['apps/happy-wakey-mcp-server.rs', '5cd01bddfca48de8660503410ec0f5519baaaf2e'],
+  ['apps/happy-wakey-sidecar.rs', '1a0fe1ec173af600c0ac056f8039b5e340055cbf'],
+  ['apps/happy-wakey-web-server.rs', '665280886324559dc4bf71844838c3641cb811d5'],
+]);
+
+test('manifest is the authority for public Kubernetes applications', async () => {
+  const manifest = JSON.parse(await readFile(
+    new URL('../monorepo.config.json', import.meta.url),
+    'utf8',
+  ));
+
+  assert.equal(manifest.org, 'happy-wakey');
+  assert.equal(manifest.monorepo, 'happy-wakey-monorepo');
+  assert.deepEqual(manifest.apps, expected);
+});
+
+test('pins every manifested application under apps', async () => {
   const modules = await readFile(new URL('../.gitmodules', import.meta.url), 'utf8');
   for (const name of expected) {
     assert.match(modules, new RegExp(`path = apps/${name.replace('.', '\\.')}`));
     assert.match(modules, new RegExp(`github\\.com/happy-wakey/${name.replace('.', '\\.')}`));
   }
+
+  assert.doesNotMatch(modules, /url = (?!https:\/\/github\.com\/happy-wakey\/)/);
 });
 
-test('records immutable gitlinks and keeps infrastructure standalone', () => {
+test('records every repository as an immutable gitlink', () => {
   const staged = execFileSync('git', ['ls-files', '--stage'], { encoding: 'utf8' });
-  const gitlinks = staged
+  const gitlinks = new Map(staged
     .split('\n')
     .filter((line) => line.startsWith('160000 '))
-    .map((line) => line.split('\t')[1])
-    .sort();
+    .map((line) => {
+      const [metadata, path] = line.split('\t');
+      return [path, metadata.split(' ')[1]];
+    }));
 
-  assert.deepEqual(gitlinks, expected.map((name) => `apps/${name}`).sort());
-  assert.ok(!gitlinks.includes('apps/happy-wakey-infra'));
+  assert.deepEqual([...gitlinks.keys()].sort(), expected.map((name) => `apps/${name}`).sort());
+  assert.equal(exactPins.size, expected.length, 'every application needs an exact reviewed pin');
+  for (const [path, revision] of exactPins) {
+    assert.match(revision, /^[0-9a-f]{40}$/, `${path} does not use a full Git revision`);
+    assert.equal(gitlinks.get(path), revision, `${path} drifted from its reviewed pin`);
+  }
 });
