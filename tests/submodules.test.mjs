@@ -11,10 +11,10 @@ const expected = [
 ];
 
 const exactPins = new Map([
-  ['apps/happy-wakey-api-server.rs', '7ba5ac2c5576a5fa79665585e067e8ea98b6eade'],
+  ['apps/happy-wakey-api-server.rs', 'fbf34290d37b5d2397155376d5d0a13965739109'],
   ['apps/happy-wakey-mcp-server.rs', '5cd01bddfca48de8660503410ec0f5519baaaf2e'],
   ['apps/happy-wakey-sidecar.rs', '1a0fe1ec173af600c0ac056f8039b5e340055cbf'],
-  ['apps/happy-wakey-web-server.rs', '665280886324559dc4bf71844838c3641cb811d5'],
+  ['apps/happy-wakey-web-server.rs', '6e74dde8f7fbd1d3fb9708e5a87c72564c52794f'],
 ]);
 
 test('manifest is the authority for public Kubernetes applications', async () => {
