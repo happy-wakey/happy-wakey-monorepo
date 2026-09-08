@@ -1,7 +1,8 @@
 node_modules/
-.zed/
-zed_modules/
+tmp/
+temp/
 .env
 .env.*
+!.env.example
 *.log
 .DS_Store
