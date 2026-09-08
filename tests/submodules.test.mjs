@@ -13,7 +13,7 @@ const expected = [
 const exactPins = new Map([
   ['apps/happy-wakey-api-server.rs', 'f027bb65f795e54b1bcfbc36db3098da3e4fcc2a'],
   ['apps/happy-wakey-mcp-server.rs', 'c2fb14705998f7a586510b3368ccd78f41368f33'],
-  ['apps/happy-wakey-sidecar.rs', 'abb0b3b3fb420cc3819ab7b3a407347dc8893cba'],
+  ['apps/happy-wakey-sidecar.rs', 'c1f06eb2a8f46280da992991094b070379dfe5c9'],
   ['apps/happy-wakey-web-server.rs', '81d4a56e2d7af87623fdc0af73a90e0b5dc77870'],
 ]);
 
