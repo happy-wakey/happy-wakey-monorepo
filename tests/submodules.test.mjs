@@ -28,14 +28,41 @@ test('manifest is the authority for public Kubernetes applications', async () =>
   assert.deepEqual(manifest.apps, expected);
 });
 
-test('pins every manifested application under apps', async () => {
-  const modules = await readFile(new URL('../.gitmodules', import.meta.url), 'utf8');
-  for (const name of expected) {
-    assert.match(modules, new RegExp(`path = apps/${name.replace('.', '\\.')}`));
-    assert.match(modules, new RegExp(`github\\.com/happy-wakey/${name.replace('.', '\\.')}`));
+function parseSubmodules(contents) {
+  const result = new Map();
+  for (const section of contents.split(/(?=^\[submodule )/m)) {
+    const header = section.match(/^\[submodule "([^"]+)"\]/);
+    if (!header) continue;
+    const values = Object.fromEntries(
+      [...section.matchAll(/^\s*(path|url)\s*=\s*(\S+)\s*$/gm)]
+        .map((match) => [match[1], match[2]]),
+    );
+    assert.equal(result.has(header[1]), false, `duplicate submodule ${header[1]}`);
+    result.set(header[1], values);
   }
+  return result;
+}
 
-  assert.doesNotMatch(modules, /url = (?!https:\/\/github\.com\/happy-wakey\/)/);
+test('pins each application path to its own exact GitHub origin', async () => {
+  const raw = await readFile(new URL('../.gitmodules', import.meta.url), 'utf8');
+  const modules = parseSubmodules(raw);
+  assert.deepEqual([...modules.keys()].sort(), expected.map((name) => `apps/${name}`).sort());
+  for (const name of expected) {
+    const entry = modules.get(`apps/${name}`);
+    assert.equal(entry.path, `apps/${name}`);
+    assert.equal(entry.url, `https://github.com/happy-wakey/${name}.git`);
+  }
+});
+
+test('rejects a cross-application submodule origin swap', () => {
+  const swapped = `[submodule "apps/happy-wakey-api-server.rs"]
+    path = apps/happy-wakey-api-server.rs
+    url = https://github.com/happy-wakey/happy-wakey-web-server.rs.git`;
+  const modules = parseSubmodules(swapped);
+  assert.notEqual(
+    modules.get('apps/happy-wakey-api-server.rs').url,
+    'https://github.com/happy-wakey/happy-wakey-api-server.rs.git',
+  );
 });
 
 test('records every repository as an immutable gitlink', () => {
